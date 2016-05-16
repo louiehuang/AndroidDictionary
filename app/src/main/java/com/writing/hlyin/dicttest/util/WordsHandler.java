@@ -54,12 +54,11 @@ public class WordsHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         //在读完整个节点后换行
         if ("acceptation".equals(localName)) {
-            posAcceptation.append("\n");
+            posAcceptation.append("\n\n");
         } else if ("orig".equals(localName)) {
             sent.append("\n");
         } else if ("trans".equals(localName)) {
-            sent.append("\n");
-            sent.append("\n");
+            sent.append("\n\n");
         }
     }
 

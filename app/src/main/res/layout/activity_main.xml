@@ -82,7 +82,7 @@
                 android:id="@+id/searchWords_posA_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="150dp">
+                android:paddingLeft="200dp">
 
                 <ImageButton
                     android:id="@+id/searchWords_voiceA"

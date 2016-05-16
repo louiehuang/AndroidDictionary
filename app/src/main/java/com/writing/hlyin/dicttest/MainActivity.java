@@ -27,7 +27,9 @@ import com.writing.hlyin.dicttest.util.WordsHandler;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hxb on 2016/5/3.
@@ -37,6 +39,9 @@ public class MainActivity extends Activity {
 
     private ListView lv1;
     private ArrayAdapter<String> aadapter;
+
+    private MyAdapter myAdapter;
+
     private String[] testWords;
     private static List<String> wordlList;
 
@@ -44,7 +49,7 @@ public class MainActivity extends Activity {
     private SearchView searchView;
     private TextView searchWords_key, searchWords_psE, searchWords_psA, searchWords_posAcceptation, searchWords_sent;
     private ImageButton searchWords_voiceE, searchWords_voiceA;
-    private LinearLayout searchWords_posA_layout,searchWords_posE_layout, searchWords_linerLayout, searchWords_fatherLayout;
+    private LinearLayout searchWords_posA_layout, searchWords_posE_layout, searchWords_linerLayout, searchWords_fatherLayout;
     private WordsAction wordsAction;
     private Words words = new Words();
 
@@ -119,8 +124,9 @@ public class MainActivity extends Activity {
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getApplication(),"点击" + lv1.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-                String word = lv1.getItemAtPosition(position).toString();
+                String param = lv1.getItemAtPosition(position).toString(); //{word=apple}
+                String word = param.split("=")[1];
+                word = word.substring(0, word.length() - 1); //apple
                 loadWords(word);
                 lv1.setVisibility(View.GONE);
             }
@@ -150,8 +156,6 @@ public class MainActivity extends Activity {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-
-
 
 
         searchView = (SearchView) findViewById(R.id.searchWords_searchView);
@@ -184,25 +188,28 @@ public class MainActivity extends Activity {
 
     public void setFilterText(String filterText) {
         //包含匹配
-        ArrayList<String> list = new ArrayList<String>();
-
-        for (int i = 0; i < testWords.length; i++) {
-            if (testWords[i].contains(filterText)) {
-                list.add(testWords[i]);
+        //Alt + Enter 快速导入包; Alt + command + L 快速排版
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < wordlList.size(); i++) {
+            if (wordlList.get(i).contains(filterText)) {
+                Map<String, Object> listItem = new HashMap<String, Object>();
+                listItem.put("word", wordlList.get(i));
+                list.add(listItem);
             }
         }
 
-        if (list.size() >= 0) {
-            aadapter = new ArrayAdapter<String>(getApplicationContext(),
-                    android.R.layout.simple_expandable_list_item_1, list);
-            lv1.setAdapter(aadapter);
-        }
+        //自定义Adapter
+        myAdapter = new MyAdapter(this);
+        myAdapter.setList(list);
+
+        lv1.setAdapter(myAdapter);
     }
 
     public void clearTextFilter() {
-        aadapter = new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.simple_expandable_list_item_1, testWords);
-        lv1.setAdapter(aadapter);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        myAdapter = new MyAdapter(this);
+        myAdapter.setList(list);
+        lv1.setAdapter(myAdapter);
     }
 
     /**
@@ -244,16 +251,16 @@ public class MainActivity extends Activity {
             searchWords_posE_layout.setVisibility(View.GONE);
         } else {
             searchWords_posAcceptation.setText(words.getPosAcceptation());
-            if(words.getPsE()!="") {
+            if (words.getPsE() != "") {
                 searchWords_psE.setText(String.format(getResources().getString(R.string.psE), words.getPsE()));
                 searchWords_posE_layout.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 searchWords_posE_layout.setVisibility(View.GONE);
             }
-            if(words.getPsA()!="") {
+            if (words.getPsA() != "") {
                 searchWords_psA.setText(String.format(getResources().getString(R.string.psA), words.getPsA()));
                 searchWords_posA_layout.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 searchWords_posA_layout.setVisibility(View.GONE);
             }
         }
