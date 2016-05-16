@@ -25,14 +25,20 @@ import com.writing.hlyin.dicttest.util.ParseXML;
 import com.writing.hlyin.dicttest.util.WordsAction;
 import com.writing.hlyin.dicttest.util.WordsHandler;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by hxb on 2016/5/3.
+ * Created by hlyin on 2016/5/15.
  * 查词界面
  */
 public class MainActivity extends Activity {
@@ -124,9 +130,8 @@ public class MainActivity extends Activity {
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String param = lv1.getItemAtPosition(position).toString(); //{word=apple}
-                String word = param.split("=")[1];
-                word = word.substring(0, word.length() - 1); //apple
+                String word = lv1.getItemAtPosition(position).toString(); //apple
+                Log.d("click: ", word);
                 loadWords(word);
                 lv1.setVisibility(View.GONE);
             }
@@ -134,28 +139,28 @@ public class MainActivity extends Activity {
 
         wordlList = new ArrayList<>();
         //初始化wordlList（数据库调单词数据）
-
-        for (int i = 0; i < testWords.length; i++) {
-            wordlList.add(testWords[i]);
-        }
-//        String res = "";
-//        try {
-//            //得到资源中的Raw数据流
-//            InputStream in = getResources().openRawResource(R.raw.words);
-//            InputStreamReader reader = new InputStreamReader(in);
-//            BufferedReader bufferedReader = new BufferedReader(reader);
-//            // 按行读取文件
-//            String line = null; // 文件行
-//            while ((line = bufferedReader.readLine()) != null) {
-//                line = line.trim();
-//                wordlList.add(line); // 1行1词
-//            }
-//            bufferedReader.close();
-//            reader.close();
-//            in.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
+//        for (int i = 0; i < testWords.length; i++) {
+//            wordlList.add(testWords[i]);
 //        }
+
+        String res = "";
+        try {
+            //得到资源中的Raw数据流
+            InputStream in = getResources().openRawResource(R.raw.words);
+            InputStreamReader reader = new InputStreamReader(in);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            // 按行读取文件
+            String line = null; // 文件行
+            while ((line = bufferedReader.readLine()) != null) {
+                line = line.trim();
+                wordlList.add(line); // 1行1词
+            }
+            bufferedReader.close();
+            reader.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         searchView = (SearchView) findViewById(R.id.searchWords_searchView);
@@ -186,17 +191,25 @@ public class MainActivity extends Activity {
     }
 
 
+    /**
+     * 根据用户的选择进行不同的匹配模式
+     * @param filterText
+     */
     public void setFilterText(String filterText) {
         //包含匹配
         //Alt + Enter 快速导入包; Alt + command + L 快速排版
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        List<String> list = new ArrayList<String>();
         for (int i = 0; i < wordlList.size(); i++) {
             if (wordlList.get(i).contains(filterText)) {
-                Map<String, Object> listItem = new HashMap<String, Object>();
-                listItem.put("word", wordlList.get(i));
-                list.add(listItem);
+                list.add(wordlList.get(i));
             }
         }
+
+//        //k近似匹配
+//        /*** 模糊匹配，找相似率大于k(0.60)的集合 ***/
+//        HashMap<String, Integer> resultMap = approximateMatch(filterText, 0.60);
+//        ArrayList<String> list = hashMapToArrayList(resultMap); //转ArrayList
 
         //自定义Adapter
         myAdapter = new MyAdapter(this);
@@ -206,7 +219,7 @@ public class MainActivity extends Activity {
     }
 
     public void clearTextFilter() {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<String> list = new ArrayList<String>();
         myAdapter = new MyAdapter(this);
         myAdapter.setList(list);
         lv1.setAdapter(myAdapter);
@@ -276,4 +289,82 @@ public class MainActivity extends Activity {
         inflater.inflate(R.menu.actionbar_layout_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
+
+
+
+
+    /**
+     * 哈希转ArrayList
+     *
+     * @param hashMap
+     */
+    public static ArrayList<String> hashMapToArrayList(HashMap<String, Integer> hashMap) {
+        ArrayList<String> result = new ArrayList<String>();
+        // 遍历哈希表
+        Iterator<Map.Entry<String, Integer>> entries = hashMap.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, Integer> entry = entries.next();
+            String word = entry.getKey();
+            //Integer similarity = entry.getValue();
+            result.add(word);
+        }
+        return result;
+    }
+
+    /**
+     * 模糊匹配，Levenshtein算法计算两字符串之间相似度，返回相似率大于d的降序排列结果
+     *
+     * @param input
+     * @param d
+     * @return
+     */
+    public static HashMap<String, Integer> approximateMatch(String input, double d) {
+        HashMap<String, Integer> resultMap = new HashMap<String, Integer>(); // <单词, 匹配度>
+        int inputLength = input.length();
+
+        for (int s = 0; s < wordlList.size(); s++) { //遍历字典
+            String template = wordlList.get(s);
+            Levenshtein lt = new Levenshtein();
+            float similarity = lt.getSimilarityRatio(input, template);
+            if (similarity >= d) {
+                int value = (int) Math.floor(similarity * 100); //相似率转成整型, 向下取整, 如0.551转成55
+                resultMap.put(template, value);
+            }
+        }
+        // 排序哈希表
+        HashMap<String, Integer> sortedMap = sortMap(resultMap);
+        return sortedMap;
+    }
+
+    /**
+     * HashMap排序
+     *
+     * @param originalMap
+     * @return
+     */
+    public static HashMap<String, Integer> sortMap(Map<String, Integer> originalMap) {
+        // 加入ArrayList
+        ArrayList<Map.Entry<String, Integer>> list = new ArrayList<Map.Entry<String, Integer>>(originalMap.entrySet());
+
+        // 对ArrayList进行排序
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            // 从大到小排序
+            @Override
+            public int compare(Map.Entry<String, Integer> element1, Map.Entry<String, Integer> element2) {
+                return element2.getValue() - element1.getValue();
+            }
+        });
+
+        // 将排序结果加入新的Map
+        HashMap<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (int i = 0; i < list.size(); i++) {
+            sortedMap.put(list.get(i).getKey(), list.get(i).getValue());
+        }
+        return sortedMap;
+    }
+
+
 }

@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by hlyin on 5/16/16.
@@ -16,7 +15,7 @@ import java.util.Map;
 //alt + enter 实现父类抽象方法
 public class MyAdapter extends BaseAdapter {
 
-    List<Map<String, Object>> list;
+    List<String> list;
     LayoutInflater inflater; //反射器，在构造器中初始化
 
     //command + N 自动生成代码
@@ -24,7 +23,7 @@ public class MyAdapter extends BaseAdapter {
         this.inflater = LayoutInflater.from(context);
     }
 
-    public void setList(List<Map<String, Object>> list) {
+    public void setList(List<String> list) {
         this.list = list;
     }
 
@@ -61,15 +60,15 @@ public class MyAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Map map = list.get(position); //Map<String, Object>
 
-        viewHolder.word.setText((String) map.get("word"));
+        ViewHolder.word.setText(list.get(position));
 
         return convertView;
     }
 
 
-    public class ViewHolder {
-        TextView word;
-    }
+}
+
+class ViewHolder {
+    static TextView word;
 }
