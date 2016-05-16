@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DictTest</string>
+
+    <string name="psE">英[%1$s]</string>
+    <string name="psA">美[%1$s]</string>
+    <string name="posAcceptation">基本释义:</string>
+    <string name="sent">例句:</string>
+    <string name="pos">pos</string>
+    <string name="vocabulary">我的生词本</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+</resources>
