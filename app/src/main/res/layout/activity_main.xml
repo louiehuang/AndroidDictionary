@@ -53,11 +53,9 @@
                 android:id="@+id/searchWords_key"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:text="abrogate"
-                android:textSize="40dp" />
+                android:textColor="#000000"
+                android:textSize="35sp" />
         </RelativeLayout>
 
         <FrameLayout
@@ -71,10 +69,13 @@
 
                 <ImageButton
                     android:id="@+id/searchWords_voiceE"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_width="30dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/voice" />
+                    android:src="@drawable/horn_dict"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/searchWords_psE"
@@ -87,20 +88,32 @@
                     android:text="@string/psE"
                     android:textColor="#3B3C3D"
                     android:textSize="16dp" />
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:text="/"
+                    android:gravity="center"
+                    android:textColor="#6C6C6C"
+                    android:textSize="14sp"/>
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/searchWords_posA_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="200dp">
+                android:paddingLeft="180dp">
 
                 <ImageButton
                     android:id="@+id/searchWords_voiceA"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_width="30dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/voice" />
+                    android:src="@drawable/horn_dict"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/searchWords_psA"
@@ -129,7 +142,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/list" />
+                    android:src="@drawable/right_cursor" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -137,7 +150,7 @@
                     android:layout_gravity="center_vertical"
                     android:padding="10dp"
                     android:text="@string/posAcceptation"
-                    android:textSize="20dp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <TextView
@@ -160,7 +173,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/list" />
+                    android:src="@drawable/right_cursor" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -168,7 +181,7 @@
                     android:layout_gravity="center_vertical"
                     android:padding="10dp"
                     android:text="@string/sent"
-                    android:textSize="20dp" />
+                    android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
 
