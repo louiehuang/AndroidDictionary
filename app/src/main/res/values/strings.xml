@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DictTest</string>
 
-    <string name="psE">英[ˈæbrəgeɪt]</string>
+    <string name="psE">英[æbrəgeɪt]</string>
     <string name="psA">美[ˈæbrəˌɡet]</string>
     <string name="posAcceptation">基本释义:</string>
     <string name="sent">例句:</string>

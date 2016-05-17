@@ -17,14 +17,15 @@
         android:id="@+id/searchWords_searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="150dp"
+        android:layout_marginRight="100dp"
         android:searchIcon="@android:drawable/ic_menu_search"
         android:queryHint="请输入要查询的单词" />
 
         <Spinner
             android:id="@+id/matchMode_spinner"
             android:layout_alignParentRight="true"
-            android:layout_width="150dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:entries="@array/spingarr"
             />
@@ -33,6 +34,9 @@
 
     <ListView
     android:id="@+id/lv1"
+    android:padding="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="100dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#969696" />

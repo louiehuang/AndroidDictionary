@@ -24,15 +24,22 @@ public class MyAdapter extends BaseAdapter {
     }
 
     public void setList(List<String> list) {
-        this.list = list;
+        //this.list = list;
+        /*只取30个元素*/
+        int length = list.size() > 30 ? 30 : list.size();
+        if(length <= 30){
+            this.list = list;
+        }
+        else{
+            this.list = list.subList(0, 30);
+        }
     }
-
 
     @Override
     public int getCount() {
-
         return list.size() > 30 ? 30 : list.size();
     }
+
 
     @Override
     public Object getItem(int position) {
@@ -46,28 +53,37 @@ public class MyAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        /*2级优化出现问题，listView下部分词点击后显示的释义不是所点的词*/
+//        ViewHolder viewHolder = null;
+//
+//        if (convertView == null) {
+//            convertView = inflater.inflate(R.layout.list_item, null);
+//            viewHolder = new ViewHolder();
+//
+//            //view才有findViewById, 而this(这里是Adapter)没有, (MainActivity有)
+//            viewHolder.word = (TextView) convertView.findViewById(R.id.item_tv_word);
+//
+//            convertView.setTag(viewHolder); //
+//        } else {
+//            viewHolder = (ViewHolder) convertView.getTag();
+//        }
+//
+//
+//        ViewHolder.word.setText(list.get(position));
+//
+//        return convertView;
 
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item, null);
-            viewHolder = new ViewHolder();
+        /*原始方法，效率低*/
+        View view = inflater.inflate(R.layout.list_item, null);
+        TextView word = (TextView) view.findViewById(R.id.item_tv_word);
+        word.setText(list.get(position));
+        return view;
 
-            //view才有findViewById, 而this(这里是Adapter)没有, (MainActivity有)
-            viewHolder.word = (TextView) convertView.findViewById(R.id.item_tv_word);
-
-            convertView.setTag(viewHolder); //
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-
-        ViewHolder.word.setText(list.get(position));
-
-        return convertView;
     }
 
 
 }
+
 
 class ViewHolder {
     static TextView word;

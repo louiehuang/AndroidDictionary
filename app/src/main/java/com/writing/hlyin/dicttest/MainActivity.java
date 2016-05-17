@@ -149,7 +149,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String word = lv1.getItemAtPosition(position).toString(); //apple
-                Log.d("click: ", word);
+                Log.d("click: ", word + ", position: " + position);
                 loadWords(word);
                 lv1.setVisibility(View.GONE);
             }
@@ -223,11 +223,11 @@ public class MainActivity extends Activity {
         switch (matchMode) {
             //正向匹配
             case 1:
-                resultMap = matchFromBeginning(filterText, 1);
+                resultMap = matchFromBeginning(filterText, 2);
                 list = hashMapToArrayList(resultMap); //转ArrayList
                 break;
             case 2:
-                resultMap = matchFromEnd(filterText, 1);
+                resultMap = matchFromEnd(filterText, 2);
                 list = hashMapToArrayList(resultMap); //转ArrayList
                 break;
             //包含匹配
@@ -245,6 +245,13 @@ public class MainActivity extends Activity {
                 list = hashMapToArrayList(resultMap); //转ArrayList
                 break;
         }
+
+//        System.out.println("");
+//        for(int i = 0; i < list.size(); i++){
+//            System.out.println(list.get(i));
+//        }
+
+
 
         //自定义Adapter
         myAdapter = new MyAdapter(this);
@@ -425,12 +432,15 @@ public class MainActivity extends Activity {
     public static ArrayList<String> hashMapToArrayList(HashMap<String, Integer> hashMap) {
         ArrayList<String> result = new ArrayList<String>();
         // 遍历哈希表
+        //int i = 1;
+
         Iterator<Map.Entry<String, Integer>> entries = hashMap.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<String, Integer> entry = entries.next();
             String word = entry.getKey();
-            //Integer similarity = entry.getValue();
             result.add(word);
+            //result.add(i + ". " + word);
+            //i++;
         }
         return result;
     }
