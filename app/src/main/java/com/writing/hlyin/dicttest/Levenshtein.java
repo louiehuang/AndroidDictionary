@@ -5,9 +5,9 @@ package com.writing.hlyin.dicttest;
  */
 
 public class Levenshtein {
+    static int d[][]; // 矩阵
 
     private int compare(String str, String target) {
-        int d[][]; // 矩阵
         int n = str.length();
         int m = target.length();
         int i; // 遍历str的

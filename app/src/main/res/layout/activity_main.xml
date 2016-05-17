@@ -6,26 +6,40 @@
     android:layout_height="match_parent"
     android:background="#E5E6E0"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.writing.hlyin.dicttest.MainActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <SearchView
         android:id="@+id/searchWords_searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="150dp"
+        android:searchIcon="@android:drawable/ic_menu_search"
         android:queryHint="请输入要查询的单词" />
 
+        <Spinner
+            android:id="@+id/matchMode_spinner"
+            android:layout_alignParentRight="true"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/spingarr"
+            />
+    </RelativeLayout>
+
+
     <ListView
-        android:id="@+id/lv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#969696" />
+    android:id="@+id/lv1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#969696" />
 
 
     <LinearLayout
+        android:padding="20dp"
         android:id="@+id/searchWords_linerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,9 +56,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:text="abc"
+                android:text="abrogate"
                 android:textSize="40dp" />
         </RelativeLayout>
 
@@ -55,8 +67,7 @@
             <LinearLayout
                 android:id="@+id/searchWords_posE_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp">
+                android:layout_height="wrap_content">
 
                 <ImageButton
                     android:id="@+id/searchWords_voiceE"

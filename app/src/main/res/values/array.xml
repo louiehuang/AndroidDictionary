@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spingarr">
+        <item>正向匹配</item>
+        <item>逆向匹配</item>
+        <item>包含匹配</item>
+        <item>k近似匹配</item>
+    </string-array>
+</resources>

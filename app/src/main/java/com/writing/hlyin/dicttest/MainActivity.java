@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,8 @@ import java.util.Map;
  */
 public class MainActivity extends Activity {
 
+    private int matchMode; //匹配模式，1~4分别表示正向匹配、逆向匹配、包含匹配、k近似匹配
+
     private ListView lv1;
     private ArrayAdapter<String> aadapter;
 
@@ -52,6 +55,7 @@ public class MainActivity extends Activity {
     private static List<String> wordlList;
 
 
+    private Spinner matchMode_spinner;
     private SearchView searchView;
     private TextView searchWords_key, searchWords_psE, searchWords_psA, searchWords_posAcceptation, searchWords_sent;
     private ImageButton searchWords_voiceE, searchWords_voiceA;
@@ -118,6 +122,20 @@ public class MainActivity extends Activity {
             }
         });
 
+        matchMode_spinner = (Spinner) findViewById(R.id.matchMode_spinner); //匹配模式
+        //监听
+        matchMode_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                matchMode = position + 1; //更新选择的匹配模式
+                Log.d("selected mode: ", "" + matchMode);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {   // 没有选项时触发
+            }
+        });
+
 
         testWords = new String[]{"apple", "appropriate", "abdicate",
                 "antidate", "abrogate", "abomination", "aggregation",
@@ -169,6 +187,7 @@ public class MainActivity extends Activity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                lv1.setVisibility(View.GONE);
                 loadWords(query);
                 return true;
             }
@@ -193,23 +212,39 @@ public class MainActivity extends Activity {
 
     /**
      * 根据用户的选择进行不同的匹配模式
+     *
      * @param filterText
      */
     public void setFilterText(String filterText) {
-        //包含匹配
         //Alt + Enter 快速导入包; Alt + command + L 快速排版
-
         List<String> list = new ArrayList<String>();
-        for (int i = 0; i < wordlList.size(); i++) {
-            if (wordlList.get(i).contains(filterText)) {
-                list.add(wordlList.get(i));
-            }
-        }
+        HashMap<String, Integer> resultMap;
 
-//        //k近似匹配
-//        /*** 模糊匹配，找相似率大于k(0.60)的集合 ***/
-//        HashMap<String, Integer> resultMap = approximateMatch(filterText, 0.60);
-//        ArrayList<String> list = hashMapToArrayList(resultMap); //转ArrayList
+        switch (matchMode) {
+            //正向匹配
+            case 1:
+                resultMap = matchFromBeginning(filterText, 1);
+                list = hashMapToArrayList(resultMap); //转ArrayList
+                break;
+            case 2:
+                resultMap = matchFromEnd(filterText, 1);
+                list = hashMapToArrayList(resultMap); //转ArrayList
+                break;
+            //包含匹配
+            case 3:
+                for (int i = 0; i < wordlList.size(); i++) {
+                    if (wordlList.get(i).contains(filterText)) {
+                        list.add(wordlList.get(i));
+                    }
+                }
+                break;
+            //k近似匹配
+            default: //k = 4
+                /*** 模糊匹配，找相似率大于k(0.60)的集合 ***/
+                resultMap = approximateMatch(filterText, 0.60);
+                list = hashMapToArrayList(resultMap); //转ArrayList
+                break;
+        }
 
         //自定义Adapter
         myAdapter = new MyAdapter(this);
@@ -291,8 +326,94 @@ public class MainActivity extends Activity {
     }
 
 
+    /**
+     * 正向匹配，返回匹配度大于等于k的单词哈希表
+     * @param input
+     * @return 正向按匹配度从大到小排序后的匹配结果
+     */
+    public static HashMap<String, Integer> matchFromBeginning(String input, int k)
+    {
+        HashMap<String, Integer> resultMap = new HashMap<String, Integer>(); // <单词, 匹配度>
+        int inputLength = input.length();
+
+        for (int s = 0; s < wordlList.size(); s++) { //遍历字典
+            String template = wordlList.get(s);
+            int templateLength = template.length();
+            int length = inputLength > templateLength ? inputLength : templateLength; //取较长的串长度
+            int similarity = -1; //匹配相似度
+
+            for (int i = 0, j = 0; i <= inputLength && j <= templateLength; i++, j++) {
+                //i==inputLength或j==templateLength时下标越界，因此先判断这些情况
+                if (i == inputLength || j == templateLength) {
+                    // i=inputLength表示input是template的一个子集, 如car是cardinal子集；j=0反之
+                    similarity = inputLength > templateLength ? templateLength : inputLength; //取小的
+                } else if (i == inputLength && j == templateLength) { // input == templateLength
+                    similarity = length; //取大的
+                }
+                else if (input.charAt(i) != template.charAt(j)) { // 从前往后依次比较，若不同，则此时可求相似度
+                    // length为input和template中较长字符串的长度，所以取相似度时也要对应
+                    if (inputLength > templateLength) { // 也即if(i > j)
+                        similarity =  i;  //下标即为此时的相似度
+                    } else {
+                        similarity =  j;
+                    }
+                    break; // 不等时退出
+                }
+            }
+            if (similarity >= k) { // 相似度大于一定程度
+                resultMap.put(template, similarity);
+            }
+        }
+
+        // 排序哈希表
+        HashMap<String, Integer> sortedMap = sortMap(resultMap);
+        return sortedMap;
+    }
 
 
+    /**
+     * 反向匹配，返回匹配度大于等于k的单词哈希表
+     * @param input
+     * @return 反向按匹配度从大到小排序后的匹配结果
+     */
+    public static HashMap<String, Integer> matchFromEnd(String input, int k)
+    {
+        HashMap<String, Integer> resultMap = new HashMap<String, Integer>(); // <单词, 匹配度>
+        int inputLength = input.length();
+
+        for (int s = 0; s < wordlList.size(); s++) { //遍历字典
+            String template = wordlList.get(s);
+            int templateLength = template.length();
+            int length = inputLength > templateLength ? inputLength : templateLength; //取较长的串长度
+            int similarity = -1; //匹配相似度
+
+            for (int i = inputLength - 1, j = templateLength - 1; i >= 0 && j >= 0; i--, j--) {
+                //注意if的顺序与正向不同
+                if (input.charAt(i) != template.charAt(j)) { // 从后往前依次比较，若不同，则此时可求相似度
+                    // length为input和template中较长那个字符串的长度，所以这里相减时也要按照对应的来减
+                    if (inputLength > templateLength) { // 也即if(i > j)
+                        similarity = (length - 1) - i; // 下标相减得到反向比较相同字符的个数
+                    } else {
+                        similarity = (length - 1) - j;
+                    }
+                    break; // 不等时退出
+                } else if (i == 0 || j == 0) {
+                    // i=0表示input是template的一个子集, 如date是antidate子集；j=0反之
+                    similarity = inputLength > templateLength ? templateLength : inputLength; //取小的
+                } else if (i == 0 && j == 0) { // input == templateLength
+                    similarity = length; //取大的
+                }
+            }
+            //System.out.println(template + ", " + similarity);
+            if (similarity >= k) { // 相似度大于一定程度
+                resultMap.put(template, similarity);
+            }
+
+        }
+        // 排序哈希表
+        HashMap<String, Integer> sortedMap = sortMap(resultMap);
+        return sortedMap;
+    }
 
 
 
@@ -325,9 +446,10 @@ public class MainActivity extends Activity {
         HashMap<String, Integer> resultMap = new HashMap<String, Integer>(); // <单词, 匹配度>
         int inputLength = input.length();
 
+        Levenshtein lt = new Levenshtein();
+
         for (int s = 0; s < wordlList.size(); s++) { //遍历字典
             String template = wordlList.get(s);
-            Levenshtein lt = new Levenshtein();
             float similarity = lt.getSimilarityRatio(input, template);
             if (similarity >= d) {
                 int value = (int) Math.floor(similarity * 100); //相似率转成整型, 向下取整, 如0.551转成55
