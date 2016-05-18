@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">DictTest</string>
+    <string name="app_name">词典</string>
 
-    <string name="psE">英[æbrəgeɪt]</string>
-    <string name="psA">美[ˈæbrəˌɡet]</string>
+    <string name="psE">英[%1$s]</string>
+    <string name="psA">美[%1$s]</string>
     <string name="posAcceptation">基本释义:</string>
     <string name="sent">例句:</string>
     <string name="pos">pos</string>

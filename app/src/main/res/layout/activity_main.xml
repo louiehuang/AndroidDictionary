@@ -11,201 +11,208 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    <SearchView
-        android:id="@+id/searchWords_searchView"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="100dp"
-        android:searchIcon="@android:drawable/ic_menu_search"
-        android:queryHint="请输入要查询的单词" />
+        android:background="#2C2C2C">
 
+        <!--搜索框-->
+        <SearchView
+            android:id="@+id/searchWords_searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="100dp"
+            android:queryHint="请输入单词"
+            android:searchIcon="@android:drawable/ic_menu_search" />
+
+        <!--模式选择下拉框-->
         <Spinner
             android:id="@+id/matchMode_spinner"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:entries="@array/spingarr"
-            />
+            android:layout_alignParentRight="true"
+
+            android:layout_marginTop="8dp"
+            android:entries="@array/spingarr" />
     </RelativeLayout>
 
 
+    <!--候选词ListView-->
     <ListView
-    android:id="@+id/lv1"
-    android:padding="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="100dp"
+    android:id="@+id/candidate_listView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="100dp"
     android:background="#969696" />
 
 
-    <LinearLayout
-        android:padding="20dp"
-        android:id="@+id/searchWords_linerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <!--页面过长时滚动-->
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-        <RelativeLayout
+        <!--查询结果布局-->
+        <LinearLayout
+            android:id="@+id/searchWords_linerLayout"
             android:layout_width="match_parent"
-            android:layout_height="60dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
 
+
+            <!--查询词-->
             <TextView
                 android:id="@+id/searchWords_key"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="abrogate"
                 android:textColor="#000000"
                 android:textSize="35sp" />
-        </RelativeLayout>
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/searchWords_posE_layout"
-                android:layout_width="match_parent"
+            <!--音标-->
+            <FrameLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageButton
-                    android:id="@+id/searchWords_voiceE"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_width="30dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/horn_dict"
-                    android:scaleType="fitCenter"/>
+                <LinearLayout
+                    android:id="@+id/searchWords_posE_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/searchWords_psE"
-                    android:layout_width="wrap_content"
+                    <ImageButton
+                        android:id="@+id/searchWords_voiceE"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/horn_dict" />
+
+                    <TextView
+                        android:id="@+id/searchWords_psE"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="7dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingTop="3dp"
+                        android:text="@string/psE"
+                        android:textColor="#3B3C3D"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="35dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="/"
+                        android:textColor="#6C6C6C"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/searchWords_posA_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="7dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingTop="3dp"
-                    android:text="@string/psE"
-                    android:textColor="#3B3C3D"
-                    android:textSize="16dp" />
+                    android:paddingLeft="140dp">
 
-                <TextView
-                    android:layout_height="match_parent"
-                    android:layout_width="50dp"
-                    android:text="/"
-                    android:gravity="center"
-                    android:textColor="#6C6C6C"
-                    android:textSize="14sp"/>
+                    <ImageButton
+                        android:id="@+id/searchWords_voiceA"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/horn_dict" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/searchWords_psA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="7dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingTop="3dp"
+                        android:text="@string/psA"
+                        android:textColor="#3B3C3D"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/searchWords_posA_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="180dp">
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/searchWords_voiceA"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_width="30dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/horn_dict"
-                    android:scaleType="fitCenter"/>
+                <!-->> 基本释义-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/searchWords_psA"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="7dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingTop="3dp"
-                    android:text="@string/psA"
-                    android:textColor="#3B3C3D"
-                    android:textSize="16dp" />
-            </LinearLayout>
-        </FrameLayout>
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/right_cursor" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/right_cursor" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="10dp"
+                        android:text="@string/posAcceptation"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/searchWords_posAcceptation"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="10dp"
-                    android:text="@string/posAcceptation"
-                    android:textSize="15sp" />
-            </LinearLayout>
+                    android:background="@drawable/layer_list_view"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/pos"
+                    android:textSize="15dp" />
 
-            <TextView
-                android:id="@+id/searchWords_posAcceptation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/layer_list_view"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:text="@string/pos"
-                android:textSize="15dp" />
+                <!-->> 例句-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/right_cursor" />
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/right_cursor" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="10dp"
+                        android:text="@string/sent"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/searchWords_sent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="10dp"
-                    android:text="@string/sent"
-                    android:textSize="15sp" />
+                    android:background="@drawable/layer_list_view"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/pos"
+                    android:textSize="15dp" />
             </LinearLayout>
+
         </LinearLayout>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/layer_list_view">
-
-            <TextView
-                android:id="@+id/searchWords_sent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="10dp"
-                android:paddingTop="5dp"
-                android:text="@string/pos"
-                android:textSize="15dp" />
-        </ScrollView>
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.writing.hlyin.dicttest;
+package com.writing.hlyin.dicttest.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.writing.hlyin.dicttest.R;
+
 import java.util.List;
 
 /**
  * Created by hlyin on 5/16/16.
+ * 候选词ListView的adapter
  */
 //alt + enter 实现父类抽象方法
 public class MyAdapter extends BaseAdapter {

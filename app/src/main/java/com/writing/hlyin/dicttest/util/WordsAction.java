@@ -28,14 +28,17 @@ public class WordsAction {
      * 本类的实例
      */
     private static WordsAction wordsAction;
+
     /**
      * Words的表名
      */
     private final String TABLE_WORDS = "Words";
+
     /**
-     * 数据库工具，用于增、删、该、查
+     * 数据库工具，用于增删查改
      */
     private SQLiteDatabase db;
+
     private MediaPlayer player = null;
 
     /**
@@ -48,7 +51,6 @@ public class WordsAction {
 
     /**
      * 单例类WordsAction获取实例方法
-     *
      * @param context 上下文
      */
     public static WordsAction getInstance(Context context) {
@@ -66,7 +68,6 @@ public class WordsAction {
     /**
      * 向数据库中保存新的Words对象
      * 会先对word进行判断，为有效值时才会保存
-     *
      * @param words 单词类的实例
      */
     public boolean saveWords(Words words) {
@@ -100,7 +101,7 @@ public class WordsAction {
         Cursor cursor = db.query(TABLE_WORDS, null, "key=?", new String[]{key}, null, null, null);
         //数据库中有
         if (cursor.getCount() > 0) {
-            Log.d("测试", "数据库中有");
+            Log.d("测试", "数据库中有该查询词");
             if (cursor.moveToFirst()) {
                 do {
                     String isChinese = cursor.getString(cursor.getColumnIndex("isChinese"));
@@ -121,7 +122,7 @@ public class WordsAction {
             }
             cursor.close();
         } else {
-            Log.d("测试", "数据库中没有");
+            Log.d("测试", "数据库中没有该查询词");
             cursor.close();
         }
 
@@ -140,7 +141,7 @@ public class WordsAction {
         String address_p3 = "&key=61B9C5D04ED0D382B4BBD28746523E75";
         if (isChinese(key)) {
             try {
-                //此处非常重要！对中文的key进行重新编码，生成正确的网址
+                //对中文的key进行重新编码，生成正确的网址
                 address_p2 = "_" + URLEncoder.encode(key, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -169,7 +170,7 @@ public class WordsAction {
     }
 
     /**
-     * 根据Unicode编码完美的判断中文汉字和符号
+     * 根据Unicode编码判断中文汉字和符号
      *
      * @param c char类型的字符串
      */
@@ -190,7 +191,6 @@ public class WordsAction {
     /**
      * 保存words的发音MP3文件到SD卡
      * 先请求Http，成功后保存
-     *
      * @param words words实例
      */
     public void saveWordsMP3(Words words) {
@@ -228,7 +228,6 @@ public class WordsAction {
 
     /**
      * 播放words的发音
-     *
      * @param wordsKey 单词的key
      * @param ps       E 代表英式发音
      *                 A 代表美式发音
@@ -236,7 +235,7 @@ public class WordsAction {
      */
     public void playMP3(String wordsKey, String ps, Context context) {
         String fileName = wordsKey + "/" + ps + ".mp3";
-        String adrs = FileUtil.getInstance().getPathInSD(fileName);
+        String adress = FileUtil.getInstance().getPathInSD(fileName);
         if (player != null) {
             if (player.isPlaying()) {
                 player.stop();
@@ -244,8 +243,8 @@ public class WordsAction {
             player.release();
             player = null;
         }
-        if (adrs != "") {//有内容则播放
-            player = MediaPlayer.create(context, Uri.parse(adrs));
+        if (adress != "") {//有内容则播放
+            player = MediaPlayer.create(context, Uri.parse(adress));
             Log.d("测试", "播放");
             player.start();
         } else {//没有内容则重新去下载

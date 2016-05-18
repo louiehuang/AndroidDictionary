@@ -1,4 +1,4 @@
-package com.writing.hlyin.dicttest;
+package com.writing.hlyin.dicttest.algorithm;
 
 /**
  * Created by hlyin on 5/16/16.
