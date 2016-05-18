@@ -10,4 +10,11 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="dailySent">每日一句:</string>
+    <string name="dailyTrans">翻译:</string>
+    <string name="dailySentValue">Our life is a movement, a tendency, a steady, ceaseless progress towards an unseen goal.</string>
+    <string name="dailyTransValue">生命是一种运动，一种趋势，一个稳步、持续地通往一个不可见的目标的过程。</string>
+    <string name="viewCount">浏览次数:</string>
+    <string name="publishTime">时间:</string>
 </resources>

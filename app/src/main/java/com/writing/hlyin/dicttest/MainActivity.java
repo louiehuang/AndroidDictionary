@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.writing.hlyin.dicttest.algorithm.matchAlgorithm;
 import com.writing.hlyin.dicttest.model.Words;
 import com.writing.hlyin.dicttest.util.HttpCallBackListener;
 import com.writing.hlyin.dicttest.util.HttpUtil;
+import com.writing.hlyin.dicttest.util.ParseJSON;
 import com.writing.hlyin.dicttest.util.ParseXML;
 import com.writing.hlyin.dicttest.util.WordsAction;
 import com.writing.hlyin.dicttest.util.WordsHandler;
@@ -35,6 +38,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by hlyin on 2016/5/15.
@@ -73,6 +77,16 @@ public class MainActivity extends Activity {
     private SearchView searchView;
 
     /**
+     * 每日一句的图片
+     */
+    private ImageView daily_ImageView;
+
+    /**
+     * 每日一句、翻译、阅读量、日期
+     */
+    private TextView publishTime_value_textView, viewCount_value_textView, dailySent_value_textView, dailyTrans_value_textView;
+
+    /**
      * 查询词、英式音标、美式音标、释义、例句TextView
      */
     private TextView searchWords_key, searchWords_psE, searchWords_psA, searchWords_posAcceptation, searchWords_sent;
@@ -86,6 +100,9 @@ public class MainActivity extends Activity {
      * 英式音标、美式音标、搜索词显示、最外层布局
      */
     private LinearLayout searchWords_posA_layout, searchWords_posE_layout, searchWords_linerLayout, searchWords_fatherLayout;
+
+
+    private ScrollView home_scrollView;
 
     /**
      * 单词行为类
@@ -112,6 +129,10 @@ public class MainActivity extends Activity {
                         Toast.makeText(MainActivity.this, "抱歉，找不到该词！", Toast.LENGTH_SHORT).show();
                         Log.d("测试", "查不到结果");
                     }
+                    break;
+                case 123:
+                    Toast.makeText(MainActivity.this, "请检查联网情况", Toast.LENGTH_SHORT).show();
+
             }
         }
     };
@@ -121,9 +142,34 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*初始化每日一句布局*/
+        publishTime_value_textView = (TextView) findViewById(R.id.publishTime_value_textView);
+        viewCount_value_textView = (TextView) findViewById(R.id.viewCount_value_textView);
+        dailySent_value_textView = (TextView) findViewById(R.id.dailySent_value_textView);
+        dailyTrans_value_textView = (TextView) findViewById(R.id.dailyTrans_value_textView);
+        /*加载每日一句信息*/
+        upDateDailyView();
+
+
         wordsAction = WordsAction.getInstance(this);
 
-        /*初始化布局*/
+        /*初始化基本布局*/
+        daily_ImageView = (ImageView) findViewById(R.id.daily_ImageView);
+        /*随机初始化daily_ImageView图片*/
+        Random random = new Random();
+        int result = random.nextInt(5) + 1; //1~5随机数
+        int resId = R.drawable.img1;
+        switch (result){
+            case 1 : resId = R.drawable.img1; break;
+            case 2 : resId = R.drawable.img2; break;
+            case 3 : resId = R.drawable.img3; break;
+            case 4 : resId = R.drawable.img4; break;
+            default : resId = R.drawable.img5; break;
+        }
+        daily_ImageView.setImageResource(resId);
+
+
+        home_scrollView = (ScrollView) findViewById(R.id.home_scrollView);
         searchWords_linerLayout = (LinearLayout) findViewById(R.id.searchWords_linerLayout);
         searchWords_linerLayout.setVisibility(View.GONE);
         searchWords_posA_layout = (LinearLayout) findViewById(R.id.searchWords_posA_layout);
@@ -222,6 +268,7 @@ public class MainActivity extends Activity {
             //提交搜索
             @Override
             public boolean onQueryTextSubmit(String query) {
+                home_scrollView.setVisibility(View.GONE);
                 candidate_listView.setVisibility(View.GONE); //隐藏候选词listView
                 loadWords(query);
                 return true;
@@ -230,6 +277,7 @@ public class MainActivity extends Activity {
             //查询内容改变
             @Override
             public boolean onQueryTextChange(String newText) {
+                home_scrollView.setVisibility(View.GONE);
                 candidate_listView.setVisibility(View.VISIBLE); //显示候选词listView
                 searchWords_linerLayout.setVisibility(View.GONE); //隐藏上一次的查询结果
 
@@ -293,6 +341,9 @@ public class MainActivity extends Activity {
     public void clearTextFilter() {
         //这里可以隐藏上一次查询结果布局
 
+
+        home_scrollView.setVisibility(View.VISIBLE);
+
         //清空候选词listView，给其赋1个空List
         List<String> list = new ArrayList<String>();
         myAdapter = new MyAdapter(this);
@@ -322,6 +373,7 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void onError() {
+                    handler.sendEmptyMessage(123);
                 }
             });
         } else {
@@ -359,6 +411,24 @@ public class MainActivity extends Activity {
         searchWords_sent.setText(words.getSent()); //显示例句
         searchWords_linerLayout.setVisibility(View.VISIBLE); //设置整个查询结果可见
     }
+
+
+    /**
+     * 更新每日一句（打开程序时更新）
+     */
+    public void upDateDailyView() {
+        String finalUrl = "http://open.iciba.com/dsapi/";
+        ParseJSON obj = new ParseJSON(finalUrl);
+        obj.fetchJSON();
+
+        while(obj.parsingComplete);
+
+        publishTime_value_textView.setText(obj.getPublishTime());
+        viewCount_value_textView.setText(obj.getViewCount());
+        dailySent_value_textView.setText(obj.getEnglish());
+        dailyTrans_value_textView.setText(obj.getTranslation());
+    }
+
 
     //加载actionbar的菜单
     @Override

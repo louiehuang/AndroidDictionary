@@ -13,8 +13,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".MainActivity"
             android:label="@string/app_name" >
+            <!--设置windowSoftInputMode属性为adjustPan，使软键盘弹出覆盖原布局而不是挤压-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
